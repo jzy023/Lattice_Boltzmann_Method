@@ -2,3 +2,9 @@
 
 
 *.Identifier
+
+*.o
+*.obj
+
+*.a
+*.out
