@@ -166,18 +166,17 @@ std::vector<float> interactiveWindow::getJetColor
 void interactiveWindow::render
 (
     const std::vector<std::vector<float>>& vec,
-    const float umagMax
+    const float vecMax
 )
 {
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_QUADS);
 
-    float umagBase = umagMax;
     for (int x = 0; x < gridWidth_ - 1; ++x) {
         for (int y = 0; y < gridHeight_ - 1; ++y) {
 
-            float normalizedValue = vec[x][y] / umagBase;
-            umagBasePrev_ = umagBase;
+            float vecMagBase = vecMax;
+            float normalizedValue = vec[x][y] / vecMagBase;
 
             // Get the corresponding Jet colormap color
             std::vector<float> color = getJetColor(normalizedValue);
@@ -202,23 +201,21 @@ void interactiveWindow::render
 (
     const std::vector<std::vector<float>>& vecX, 
     const std::vector<std::vector<float>>& vecY,
-    const float umagMax
+    const float vecMagMax
 )
 {
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_QUADS);
 
-    float umagBase = 0.2; // umagBasePrev_;
+    float vecMagBase = 0.2;
     for (int x = 0; x < gridWidth_ - 1; ++x) {
         for (int y = 0; y < gridHeight_ - 1; ++y) {
             // Compute the velocity magnitude
-            float velocity = sqrt(vecX[x][y] * vecX[x][y] + vecY[x][y] * vecY[x][y]);
+            float vecMag = sqrt(vecX[x][y] * vecX[x][y] + vecY[x][y] * vecY[x][y]);
 
             // Normalize velocity for Jet colormap  
-            // umagBase = (umagBasePrev_ < umagMax) * (1.1 * umagMax) + (umagBasePrev_ >= umagMax) * (0.3*(umagMax - umagBasePrev_) + umagBasePrev_);
-            // umagBasePrev_ = umagBase;
-            // umagBase = (umagBase < umagMax) * umagMax + (umagBase >= umagMax) *umagBase;
-            float normalizedValue = velocity / umagBase;
+            vecMagBase = (vecMagBase < vecMagMax) * vecMagMax + (vecMagBase >= vecMagMax) * vecMagBase;
+            float normalizedValue = vecMag / vecMagBase;
 
             // Get the corresponding Jet colormap color
             std::vector<float> color = getJetColor(normalizedValue);
@@ -233,7 +230,7 @@ void interactiveWindow::render
             glVertex2f(y + 1, x);
         }
     }
-
+    
     glEnd();
     SDL_GL_SwapWindow(window_);
 }
