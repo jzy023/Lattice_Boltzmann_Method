@@ -14,7 +14,7 @@ A brief description of what this project does and its intended purpose.
 
 1. Clone the repo
     ```bash
-    git clone git@github.com:jzy023/ Lattice_Boltzmann_Method.git
+    git clone git@github.com:jzy023/Lattice_Boltzmann_Method.git
    ```
 
 2. Dependency packages
