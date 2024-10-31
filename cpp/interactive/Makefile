@@ -6,10 +6,10 @@ USE_DEBUG=YES
 # USE_DEBUG=NO
 
 
-#==================== Included Libraries ====================
-LIBS_DIRECTORIES:=$(LIBS_DIRECTORIES) -L/usr/lib/gcc/x86_64-linux-gnu/9 -lSDL2 -lGL
-JLIBS=${LIBS_DIRECTORIES}
 
+#==================== Included Libraries ====================
+LIBS_DIRECTORIES:=$(LIBS_DIRECTORIES) -L/usr/lib/gcc/x86_64-linux-gnu/9 -lSDL2 -lGL -lgif
+JLIBS=${LIBS_DIRECTORIES}
 
 #======================= Other Setups =======================
 ifeq ($(USE_DEBUG), YES)
@@ -27,13 +27,13 @@ CC=g++
 CCFLAGS=-c -std=c++2a -fopenmp
 ifeq ($(USE_DEBUG), YES)
 	CCFLAGS+= -g -Wall -O3
-endif
-
-ifeq ($(USE_FAST_MATH), YES)
+else
+	ifeq ($(USE_FAST_MATH), YES)
 	CCFLAGS+= -ffast-math
-endif
-ifeq ($(USE_NATIVE_CPU_OPTIMIZATIONS), YES)
-	CCFLAGS+= -march=native
+	endif
+	ifeq ($(USE_NATIVE_CPU_OPTIMIZATIONS), YES)
+		CCFLAGS+= -march=native
+	endif
 endif
 
 CCLINKFLAGS=-fopenmp -lgomp
@@ -43,14 +43,12 @@ ifeq ($(USE_GCC5), YES)
 	CCLINKFLAGS+=-D_GLIBCXX_USE_CXX11_ABI=0
 endif
 
-
 #=============== Files to compile ===============
 SRC_TP = $(wildcard ThirdParty/*.cpp)
 OBJ_TP = $(SRC_TP:.cpp=.o)
 
 SRC = $(wildcard *.cpp)
 OBJ = $(SRC:.cpp=.o) 
-
 
 #=============== CPU Code Compilation ===============
 all:$(EXECS_DIRECTORY)/$(EXECNAME)
