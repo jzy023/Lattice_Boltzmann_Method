@@ -23,8 +23,7 @@ Geometric Setup:
 
 #pragma once
 
-
-#include "includes.hpp"
+#include "../includes.hpp"
 
 
 class confinedBox
@@ -37,7 +36,7 @@ private:
     const int Q = 9;
     
     // time stepping info
-    int itr_;
+    long unsigned itr_;
 
     // parameters
     int ny_, nx_;

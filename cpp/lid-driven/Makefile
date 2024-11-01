@@ -24,6 +24,7 @@ endif
 #==================== Included Libraries ====================
 CC=g++
 
+CCFLAGS=-c -std=c++2a -fopenmp
 ifeq ($(USE_DEBUG), YES)
 	CCFLAGS+= -g -Wall -O3
 else

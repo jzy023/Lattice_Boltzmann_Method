@@ -4,7 +4,7 @@
 
 int main()
 {
-    int itr = 0;
+    long unsigned itr = 0;
     confinedBox domain(66, 1000);
     std::tuple<int, int, float, float> cursorVel;
 

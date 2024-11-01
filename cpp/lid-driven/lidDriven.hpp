@@ -23,13 +23,15 @@ Geometric Setup:
 
 #pragma once
 
-
-#include "includes.hpp"
+#include "../includes.hpp"
 
 
 class lidDriven
 {
 private:
+    // others
+    std:: string dataOutputDir_;
+
     // constant 2D spacial info
     const int C = 0;
     const int E  = 1,  N = 2,  W = 3,  S = 4;
@@ -37,7 +39,7 @@ private:
     const int Q = 9;
     
     // time stepping info
-    int itr_;
+    long unsigned itr_;
 
     // parameters
     int ny_, nx_;
@@ -98,12 +100,17 @@ public:
     const int getNy() { return ny_; }
 
     // methods
+    void setUlid(float ulid) { ulid_ = ulid; }
+
     void macroscopic();
 
     void update();
     
     void addCursorVel(std::tuple<int, int, float, float>& cursorVel);
 
-    void setUlid(float ulid) { ulid_ = ulid; }
+    void mkdirDataOutput(std::string dataOutputDir);
+
+    void wrtieDataCSV(int sampleFreq);
+
 
 };

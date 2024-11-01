@@ -1,7 +1,8 @@
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
 
-#include "includes.hpp"
+#include "../includes.hpp"
+
 
 class interactiveWindow
 {
@@ -60,7 +61,6 @@ public:
 
 
     std::tuple<int, int, float, float> fetchCursorMove();
-
 
 
 };

@@ -1,7 +1,7 @@
 #include "interactiveWindow.hpp"
 
 
-// constructors
+// constructors =======================================================================
 interactiveWindow::interactiveWindow()
 :
     gridWidth_(66),
@@ -134,7 +134,8 @@ interactiveWindow::interactiveWindow
 }
 
 
-// destructor
+
+// destructor =========================================================================
 interactiveWindow::~interactiveWindow()
 {
     SDL_GL_DeleteContext(context_);
@@ -143,7 +144,7 @@ interactiveWindow::~interactiveWindow()
 }
 
 
-// private methods
+// private methods ====================================================================
 std::vector<float> interactiveWindow::getJetColor
 (
     float normalizedValue
@@ -160,7 +161,7 @@ std::vector<float> interactiveWindow::getJetColor
 }
 
 
-// methods
+// methods ============================================================================
 void interactiveWindow::render
 (
     const std::vector<std::vector<float>>& vec,
@@ -264,3 +265,5 @@ std::tuple<int, int, float, float> interactiveWindow::fetchCursorMove()
 
     return ans;
 }
+
+

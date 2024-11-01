@@ -52,6 +52,8 @@ C++ programes:
     
 1. 2D Lid-Driven Cavity 
 
+![lidDrivenGif](https://raw.githubusercontent.com/jzy023/gifs/main/LBM/lidDrivenLBM.gif)
+
 2. 2D Interactive Domain
 
 
