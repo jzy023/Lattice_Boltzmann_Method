@@ -1,4 +1,4 @@
-# Project Title
+# Lattice Boltzmann Method 
 
 This is a project about Lattice Boltzmann Method. It contains serveral cases built in C++ and Python.
 
