@@ -4,10 +4,13 @@
 
 int main()
 {
+    int sampleFreq = 100;
     long unsigned itr = 0;
     confinedBox domain(66, 1000);
     std::tuple<int, int, float, float> cursorVel;
 
+    // make dir for output data
+    domain.mkdirDataOutput("data");
 
     SDL_Event event;
     interactiveWindow window("confined box Umag profile", domain.getNx());
@@ -27,6 +30,9 @@ int main()
         domain.update();
         domain.macroscopic();
 
+        // log data
+        if (itr % sampleFreq == 0) { domain.wrtieDataCSV(sampleFreq); }
+
         // fetch domain vels
         std::vector<std::vector<float>> ux = domain.getUx();
         std::vector<std::vector<float>> uy = domain.getUy();
@@ -38,7 +44,7 @@ int main()
         itr++;
         std::cout << std::endl;
 
-        SDL_Delay(15);
+        // SDL_Delay(15);
     }
 
     return 0;

@@ -56,6 +56,8 @@ C++ programes:
 
 2. 2D Interactive Domain
 
+![lidDrivenGif](https://raw.githubusercontent.com/jzy023/gifs/main/LBM/interactive.gif)
+
 
 Python programes:
 

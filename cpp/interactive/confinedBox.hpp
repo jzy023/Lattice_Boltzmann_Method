@@ -29,6 +29,9 @@ Geometric Setup:
 class confinedBox
 {
 private:
+    // others
+    std:: string dataOutputDir_;
+
     // constant 2D spacial info
     const int C = 0;
     const int E  = 1,  N = 2,  W = 3,  S = 4;
@@ -100,5 +103,9 @@ public:
     void update();
     
     void addCursorVel(std::tuple<int, int, float, float>& cursorVel);
+
+    void mkdirDataOutput(std::string dataOutputDir);
+
+    void wrtieDataCSV(int sampleFreq);
 
 };

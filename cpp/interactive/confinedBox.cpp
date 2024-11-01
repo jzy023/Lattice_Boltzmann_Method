@@ -292,3 +292,43 @@ void confinedBox::addCursorVel
     std::cout << " umagMax: " << umagMax_;
 }
 
+
+void confinedBox::mkdirDataOutput
+(std::string dataOutputDir)
+{
+    dataOutputDir_ = dataOutputDir;
+    // make a dir with drwxr-xr-x
+    mkdir(dataOutputDir_.c_str(), 0755);
+}
+
+
+void confinedBox::wrtieDataCSV(int sampleFreq)
+{
+    std::stringstream filenameStream;
+    filenameStream << dataOutputDir_ << "/"
+                   << std::setfill('0') << std::setw(4) // Width of 4, fill with '0'
+                   << (itr_ / sampleFreq) << ".csv";
+
+    std::string filename_ = filenameStream.str();
+
+
+
+    // Open the file with the formatted filename
+    std::ofstream log;
+    log.open(filename_, std::ios::out);
+    log << "x,y,ux,uy,umag\n";
+
+    for (int y = 0; y < ny_; y++)
+        for (int x = 0; x < nx_; x++) {
+        {
+            log << std::setprecision(15) <<
+                   x << ","    << 
+                   y << ","    << "0," <<
+                   ux_[y][x]   << "," <<
+                   uy_[y][x]   << "," <<
+                   umag_[y][x] << "\n";
+        }
+    }
+
+    log.close();
+}
