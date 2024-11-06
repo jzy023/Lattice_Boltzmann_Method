@@ -1,6 +1,5 @@
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
-#include <gif_lib.h>
 
 #include "includes.hpp"
 
@@ -24,14 +23,6 @@ private:
     // private 
     std::vector<float> getJetColor(float normalizedValue);
 
-    // Private method to initialize GIF file
-    bool initializeGif(const char* filename);
-
-    // Private method to save a frame to the GIF
-    void saveFrameToGif();
-
-    // Private method to close the GIF file
-    void closeGif();
 
 
 public:

@@ -168,102 +168,6 @@ std::vector<float> interactiveWindow::getJetColor
 }
 
 
-// // Initialize the GIF file
-// bool interactiveWindow::initializeGif(const char* filename) {
-//     gifColorMap_.ColorCount = 256;       // Set to 256 for an 8-bit color palette
-//     gifColorMap_.BitsPerPixel = 8;       // 8 bits per pixel (256 colors)
-//     gifColorMap_.SortFlag = false;
-//     gifColorMap_.Colors = new GifColorType[gifColorMap_.ColorCount]; // Allocate color map
-
-//     // Populate color map with Jet colormap
-//     for (int i = 0; i < gifColorMap_.ColorCount; ++i) {
-//         float normalizedValue = static_cast<float>(i) / 255.0f;
-//         std::vector<float> color = getJetColor(normalizedValue);
-        
-//         gifColorMap_.Colors[i].Red = static_cast<GifByteType>(color[0] * 255);
-//         gifColorMap_.Colors[i].Green = static_cast<GifByteType>(color[1] * 255);
-//         gifColorMap_.Colors[i].Blue = static_cast<GifByteType>(color[2] * 255);
-//     }
-
-//     // Allocate pixel buffer once for the grid size (66x66)
-//     pixels_ = new unsigned char[gridWidth_ * gridHeight_ * 3]; // RGB
-
-//     gifFileName_ = filename; // Store filename
-//     gifFile_ = EGifOpenFileName(gifFileName_, false, NULL); // Open GIF for writing
-//     if (!gifFile_) {
-//         SDL_Log("Error opening GIF file: %s", gifFileName_);
-//         delete[] pixels_; // Clean up allocated memory
-//         return false;
-//     }
-
-//     // Set the GIF screen descriptor
-//     if (EGifPutScreenDesc(gifFile_, gridWidth_, gridHeight_, 256, 0, &gifColorMap_) == GIF_ERROR) {
-//         SDL_Log("Error setting GIF screen descriptor");
-//         EGifCloseFile(gifFile_, NULL); // Close on failure
-//         gifFile_ = nullptr; // Reset pointer
-//         delete[] pixels_; // Clean up allocated memory
-//         return false;
-//     }
-
-//     frameCount_ = 0; // Reset frame count
-//     return true;
-// }
-
-// // Save a frame to the GIF
-// void interactiveWindow::saveFrameToGif() {
-//     // Read pixels from the OpenGL buffer for the grid size
-//     glReadPixels(0, 0, gridWidth_, gridHeight_, GL_RGB, GL_UNSIGNED_BYTE, pixels_);
-
-//     // std::cout << "\nR " << static_cast<int>(pixels_[66*10 - 3]) 
-//     //           << "; G " << static_cast<int>(pixels_[66*10 - 2]) 
-//     //           << "; B " << static_cast<int>(pixels_[66*10 - 1]) << std::endl;
-
-//     if (!gifFile_) {
-//         SDL_Log("GIF file is not open. Cannot save frame.");
-//         return;
-//     }
-
-//     // Flip pixels vertically (if needed)
-//     // unsigned char* flippedPixels = new unsigned char[gridWidth_ * gridHeight_ * 3]; // 66x66 pixels
-//     // for (int y = 0; y < gridHeight_; y++) {
-//     //     for (int x = 0; x < gridWidth_; x++) {
-//     //         int srcIndex = (x + (gridHeight_ - 1 - y) * gridWidth_) * 3; // Source index for flipping
-//     //         int dstIndex = (x + y * gridWidth_) * 3; // Destination index
-//     //         flippedPixels[dstIndex] = pixels_[srcIndex];        // R
-//     //         flippedPixels[dstIndex + 1] = pixels_[srcIndex + 1]; // G
-//     //         flippedPixels[dstIndex + 2] = pixels_[srcIndex + 2]; // B
-//     //     }
-//     // }
-
-//     // Write image descriptor for the current frame
-//     if (EGifPutImageDesc(gifFile_, 0, 0, gridWidth_, gridHeight_, false, &gifColorMap_) == GIF_ERROR) {
-//         std::cout << " ERROR! " << gifFile_->Error << std::endl;
-//         // delete[] flippedPixels; // Clean up
-//         return;
-//     }
-
-//     // Write pixel data to GIF
-//     if (EGifPutLine(gifFile_, pixels_, gridWidth_ * gridHeight_ * 3) == GIF_ERROR) {
-//         std::cout << " ERROR! " << gifFile_->Error << std::endl;
-//         return;
-//     }
-
-//     // Clean up
-//     // delete[] flippedPixels; 
-//     frameCount_++;
-// }
-
-// // Close the GIF file
-// void interactiveWindow::closeGif() {
-//     if (gifFile_) {
-//         EGifCloseFile(gifFile_, NULL); // Close the GIF file
-//         gifFile_ = nullptr;
-//     }
-//     delete[] gifColorMap_.Colors;
-//     delete[] pixels_; // Clean up allocated pixel buffer
-// }
-
-
 
 // methods
 void interactiveWindow::render
@@ -298,6 +202,7 @@ void interactiveWindow::render
     glEnd();
     SDL_GL_SwapWindow(window_); 
 }
+
 
 
 void interactiveWindow::render
@@ -337,6 +242,7 @@ void interactiveWindow::render
     glEnd();
     SDL_GL_SwapWindow(window_);
 }
+
 
 
 std::tuple<int, int, float, float> interactiveWindow::fetchCursorMove()

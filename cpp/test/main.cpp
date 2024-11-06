@@ -6,14 +6,16 @@
 int main()
 {
 
-    domain Domain(5, 0.0, 1000);
+    domain Domain(10, 0.0, 1000);
 
-    for (int ix = 0; ix < 10; ix++)
-    {
-        Domain.nodes[0][ix].setBound();
-    }
+    //              yMin    xMin    yMax    xMax
+    Domain.setBound(0,      9,      9,      9); // East wall
+    Domain.setBound(0,      0,      0,      9); // South wall
+    Domain.setBound(0,      0,      9,      0); // West wall
 
     Domain.printTypes();
+
+
 
     // std::cout << Domain.nodes[0][1].getType();
 

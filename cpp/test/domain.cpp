@@ -40,39 +40,40 @@ void domain::init()
     nodes.reserve(ny_);
 
     itr_ = 0;
-    ux_.reserve(ny_);
-    uy_.reserve(ny_);
-    usqr_.reserve(ny_);
-    umag_.reserve(ny_);
-    rho_.reserve(ny_);
+    
+    // uy_.reserve(ny_);
+    // ux_.reserve(ny_);
+    // usqr_.reserve(ny_);
+    // umag_.reserve(ny_);
+    // rho_.reserve(ny_);
 
-    f_.reserve(ny_);
-    f0_.reserve(ny_);
-    feq_.reserve(ny_);
+    // f_.reserve(ny_);
+    // f0_.reserve(ny_);
+    // feq_.reserve(ny_);
+
 
     // #pragma omp parallel for
     for (int j = 0; j < ny_; j++)
     {
         nodes[j].reserve(nx_);
 
-        ux_[j].reserve(nx_);
-        uy_[j].reserve(nx_);
-        usqr_[j].reserve(nx_);
-        umag_[j].reserve(nx_);
-        rho_[j].assign(nx_, 1.0);
+        // f_[j].reserve(nx_);
+        // f0_[j].reserve(nx_);
+        // feq_[j].reserve(nx_);
 
-        f_[j].reserve(nx_);
-        f0_[j].reserve(nx_);
-        feq_[j].reserve(nx_);
-
+        // rho_[j].assign(nx_, 1.0);
+        // uy_[j].reserve(nx_);
+        // ux_[j].reserve(nx_);
+        // usqr_[j].reserve(nx_);
+        // umag_[j].reserve(nx_);
 
         for (int i = 0; i < nx_; i++)
         {
             nodes[j].emplace_back(j, i);
 
-            f_[j][i] = {4./9., 1./9., 1./9., 1./9., 1./9., 1./36., 1./36., 1./36., 1./36.};
-            f0_[j][i] = f_[j][i];
-            feq_[j][i].reserve(Q);
+            // f_[j][i] = {4./9., 1./9., 1./9., 1./9., 1./9., 1./36., 1./36., 1./36., 1./36.};
+            // f0_[j][i] = f_[j][i];
+            // feq_[j][i].reserve(Q);
         }
     }
 
@@ -85,44 +86,6 @@ void domain::init()
 
     checkBound();
 }
-
-
-// void domain::calcTau()
-// {
-//     visc_ = umagMax_ * (ny_ - 1) / re_;    // <--  needs to be updated with cursor velocity
-//     tau_ = (6 * visc_ + 1) / 2;         // <--  needs to be updated with FPS
-//     std::cout << std::fixed << std::setprecision(4) << "\t>>> tau: " << tau_;
-// }
-
-
-// void domain::equilibrium()
-// {
-//     // #pragma omp parallel for collapse(2)
-//     for (int i = 0; i < ny_; i++)
-//     {
-//         for (int j = 0; j < nx_; j++)
-//         {
-//             // usqr_[i][j] = ux_[i][j] * ux_[i][j] + uy_[i][j] * uy_[i][j];
-//             // umag_[i][j] = std::sqrt(usqr_[i][j]);
-
-//             float uxSqr = ux_[i][j] * ux_[i][j];
-//             float uySqr = uy_[i][j] * uy_[i][j];
-//             float uxy = ux_[i][j] + uy_[i][j];
-//             float uxy_sq = uxy * uxy;
-
-//             float r = rho_[i][j];
-//             feq_[i][j][C] = (4./9.) * r * (1 - 1.5 * usqr_[i][j]);
-//             feq_[i][j][E] = (1./9.) * r * (1 + 3 * ux_[i][j] + 4.5 * uxSqr - 1.5 * usqr_[i][j]);
-//             feq_[i][j][N] = (1./9.) * r * (1 + 3 * uy_[i][j] + 4.5 * uySqr - 1.5 * usqr_[i][j]);
-//             feq_[i][j][W] = (1./9.) * r * (1 - 3 * ux_[i][j] + 4.5 * uxSqr - 1.5 * usqr_[i][j]);
-//             feq_[i][j][S] = (1./9.) * r * (1 - 3 * uy_[i][j] + 4.5 * uySqr - 1.5 * usqr_[i][j]);
-//             feq_[i][j][NE] = (1./36.) * r * (1 + 3 * uxy + 4.5 * uxy_sq - 1.5 * usqr_[i][j]);
-//             feq_[i][j][NW] = (1./36.) * r * (1 + 3 * (uy_[i][j] - ux_[i][j]) + 4.5 * (uy_[i][j] - ux_[i][j]) * (uy_[i][j] - ux_[i][j]) - 1.5 * usqr_[i][j]);
-//             feq_[i][j][SW] = (1./36.) * r * (1 + 3 * (-uxy) + 4.5 * uxy_sq - 1.5 * usqr_[i][j]);
-//             feq_[i][j][SE] = (1./36.) * r * (1 + 3 * (-uy_[i][j] + ux_[i][j]) + 4.5 * (-uy_[i][j] + ux_[i][j]) * (-uy_[i][j] + ux_[i][j]) - 1.5 * usqr_[i][j]);
-//         }
-//     }
-// }
 
 
 // void domain::boundaryConditions()
@@ -251,38 +214,6 @@ void domain::init()
 
 
 
-
-// // methods
-// void domain::macroscopic()
-// {
-//     umagMax_ = 0.0;
-//     // umagMax_ = ulid_;
-//     // umagMax_ = 0.95*umagMax_;
-//     // #pragma omp parallel for collapse(2)
-//     for (int i = 0; i < ny_; i++)
-//     {
-//         for (int j = 0; j < nx_; j++)
-//         {
-//             rho_[i][j] = 0;
-//             for (int q = 0; q < Q; q++)
-//             {
-//                 rho_[i][j] += f_[i][j][q];
-//             }
-//             ux_[i][j] = (f_[i][j][E] - f_[i][j][W] + f_[i][j][NE] + f_[i][j][SE] - f_[i][j][NW] - f_[i][j][SW]) / rho_[i][j];
-//             uy_[i][j] = (f_[i][j][N] - f_[i][j][S] + f_[i][j][NE] + f_[i][j][NW] - f_[i][j][SE] - f_[i][j][SW]) / rho_[i][j];
-//             ux_[ny_-1][j] = ulid_;
-//             uy_[ny_-1][j] = 0;
-
-//             usqr_[i][j] = ux_[i][j] * ux_[i][j] + uy_[i][j] * uy_[i][j];
-//             umag_[i][j] = std::sqrt(usqr_[i][j]);
-
-//             // rewrite umagMax for tau calculation
-//             umagMax_ = (umag_[i][j] >= umagMax_) * umag_[i][j] + (umag_[i][j] < umagMax_) * umagMax_;
-//         }
-//     }
-// }
-
-
 // void domain::update()
 // {
 //     // std::cout << ">>> time iteration:" << itr_;
@@ -368,31 +299,184 @@ void domain::printTypes()
     {
         for (int ix = 0; ix < nx_; ix++)
         {
-            // std::cout << nodes[iy][ix].getType() << " ";
+            if (nodes[iy][ix].Type() == 1)
+            {
+                std::cout << " ~";
+            }
+            else if(nodes[iy][ix].Type() == -1)
+            {
+                std::cout << " x";
+            }
+            else
+            {
+                std::cout << " o";
+            }
+              
+            // std::cout << nodes[iy][ix].Type() << " ";
             // std::cout << "(" << nodes[iy][ix].y << "," << nodes[iy][ix].x << ") ";
             // std::cout << "(" << nodes[iy][ix].neibors[0][0] << "," << nodes[iy][ix].neibors[0][1] << ") ";
-            std::cout << "(" << nodes[iy][ix].neibors[4][0] << "," << nodes[iy][ix].neibors[4][1] << ") ";
+            // std::cout << "(" << nodes[iy][ix].neibors[4][0] << "," << nodes[iy][ix].neibors[4][1] << ") ";
         }
         std::cout << "\n";
     }
-    
+}
+
+
+void domain::setBound
+(
+    int yMin, 
+    int xMin, 
+    int yMax, 
+    int xMax
+)
+{
+    // check if min and max are legal
+    if (yMax < yMin || xMax < xMin)
+    {        
+        std::cerr << "minus entrance larger than max entrance\n";
+        abort();
+    }
+
+    if (yMin < 0 || yMax > (ny_-1))
+    {        
+        std::cout << "WARNING: entrance [yMin, yMax]: (" << yMin << "," << yMax
+                  << ") are out of bound of: ["          << 0    << "," << (ny_-1) << "] for setBound()\n";
+    }
+
+    if (xMin < 0 || xMax > (nx_-1))
+    {        
+        std::cout << "WARNING: entrance [xMin, xMax]: (" << xMin << "," << xMax
+                  << ") are out of bound of: ["          << 0    << "," << (nx_-1) << "] for setBound()\n";
+    }
+
+    // check to avoid out of bound
+    yMin = (yMin < 0)*0
+         + (yMin > (ny_-1))*(ny_-1)
+         + (0 <= yMin && yMin <= (ny_-1))*yMin;
+
+    xMin = (xMin < 0)*0
+         + (xMin > (nx_-1))*(nx_-1)
+         + (0 <= xMin && xMin <= (nx_-1))*xMin;
+
+    yMax = (yMax < 0)*0
+         + (yMax > (ny_-1))*(ny_-1)
+         + (0 <= yMax && yMax <= (ny_-1))*yMax;
+
+    xMax = (xMax < 0)*0
+         + (xMax > (nx_-1))*(nx_-1)
+         + (0 <= xMax && xMax <= (nx_-1))*xMax;
+
+    // std::cout << "yMin: " << yMin << ", xMin: " << xMin << ", "
+    //           << "yMax: " << yMax << ", xMax: " << xMax << "\n";
+
+    // set bound
+    for (int iy = yMin; iy < yMax+1; iy++)
+    {
+        for (int ix = xMin; ix < xMax+1; ix++)
+        {
+            // std::cout << "setting bound at (" << iy << "," << ix << ")\n";
+            nodes[iy][ix].setBound();
+        }
+    }
+}
+
+
+void domain::setConstVel
+(
+    int yMin, 
+    int xMin, 
+    int yMax, 
+    int xMax, 
+    float ux, 
+    float uy
+)
+{
+    // check if min and max are legal
+    if (yMax < yMin || xMax < xMin)
+    {        
+        std::cerr << "minus entrance larger than max entrance\n";
+        abort();
+    }
+
+    if (yMin < 0 || yMax > (ny_-1))
+    {        
+        std::cout << "WARNING: entrance [yMin, yMax]: (" << yMin << "," << yMax
+                  << ") are out of bound of: ["          << 0    << "," << (ny_-1) << "] for setConstVel()\n";
+    }
+
+    if (xMin < 0 || xMax > (nx_-1))
+    {        
+        std::cout << "WARNING: entrance [xMin, xMax]: (" << xMin << "," << xMax
+                  << ") are out of bound of: ["          << 0    << "," << (nx_-1) << "] for setConstVel()\n";
+    }
+
+    // check to avoid out of bound
+    yMin = (yMin < 0)*0
+         + (yMin > (ny_-1))*(ny_-1)
+         + (0 <= yMin && yMin <= (ny_-1))*yMin;
+
+    xMin = (xMin < 0)*0
+         + (xMin > (nx_-1))*(nx_-1)
+         + (0 <= xMin && xMin <= (nx_-1))*xMin;
+
+    yMax = (yMax < 0)*0
+         + (yMax > (ny_-1))*(ny_-1)
+         + (0 <= yMax && yMax <= (ny_-1))*yMax;
+
+    xMax = (xMax < 0)*0
+         + (xMax > (nx_-1))*(nx_-1)
+         + (0 <= xMax && xMax <= (nx_-1))*xMax;
+
+    // set bound
+    for (int iy = yMin; iy < yMax+1; iy++)
+    {
+        for (int ix = xMin; ix < xMax+1; ix++)
+        {
+            nodes[iy][ix].setVel(ux, uy);
+        }
+    }
 }
 
 
 
-void domain::propagate()
+void domain::update()
 {
-    for (int iy = 1; iy < ny_-1; iy++)
+    for (int iy = 0; iy < ny_; iy++)
     {
-        for (int ix = 1; ix < nx_-1; ix++)
+        for (int ix = 0; ix < nx_; ix++)
         {
             // skip voids
-            if (nodes[iy][ix].getType() == -2)
+            if (nodes[iy][ix].Type() == -2)
             {
                 continue;
             }
 
+            // calc equilibrium
+            nodes[iy][ix].equilibrium();
+
+            // boundary
+            // nodes[iy][ix].forceBoundaries();
+
+            // colliding
+            if ( (0 < iy) && (0 < ix) && ( iy < ny_-1) && ( ix < nx_-1))
+            {
+                nodes[iy][ix].colliding(tau_);
+                // for (int q = 0; q < 9; q++)
+                // {
+                //     (*nodes[iy][ix].setF0())[q] += -(1. / tau_) * (nodes[iy][ix].F()[q] - nodes[iy][ix].Feq()[q]);
+                // }
+            }
+
+            // streaming
+
+            // add source term
+
+            // macroscopic
+            nodes[iy][ix].macroscopic();
+
         }
-        
     }
 }
+
+
+

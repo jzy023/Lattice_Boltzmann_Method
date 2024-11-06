@@ -49,17 +49,18 @@ private:
     // calculated parameters
     float visc_, tau_;
     float umagMax_;
-    std::vector<std::vector<float>> ux_;
-    std::vector<std::vector<float>> uy_;
-    std::vector<std::vector<float>> usqr_;
-    std::vector<std::vector<float>> umag_;
-    std::vector<std::vector<float>> rho_;
 
-    std::vector<std::vector<float>> marker_;
+    // std::vector<std::vector<float>> ux_;
+    // std::vector<std::vector<float>> uy_;
+    // std::vector<std::vector<float>> usqr_;
+    // std::vector<std::vector<float>> umag_;
+    // std::vector<std::vector<float>> rho_;
 
-    std::vector<std::vector<std::vector<float>>> f_;
-    std::vector<std::vector<std::vector<float>>> f0_;
-    std::vector<std::vector<std::vector<float>>> feq_;
+    // std::vector<std::vector<float>> marker_;
+
+    // std::vector<std::vector<std::vector<float>>> f_;
+    // std::vector<std::vector<std::vector<float>>> f0_;
+    // std::vector<std::vector<std::vector<float>>> feq_;
 
     // private methods
     void init();
@@ -71,8 +72,6 @@ private:
     void boundaryConditions();
 
     void collideStream();
-
-
 
 
 public:
@@ -92,12 +91,39 @@ public:
 
     std::vector<std::vector<node>> nodes;
 
-
     void checkBound();
 
     void printTypes();
 
-    void propagate();
+    void setBound(int yMin, int xMin, int yMax, int xMax);
+
+    void setConstVel(int yMin, int xMin, int yMax, int xMax, float ux, float uy);
+
+    void update();
+
+    // void setF()
+    // {
+    //     for (int iy = 0; iy < ny_; iy++)
+    //     {
+    //         for (int ix = 0; ix < nx_; ix++)
+    //         {
+    //             (*nodes[iy][ix].setF())[0] = 1.0;
+    //         }
+    //     }
+    // }
+
+
+    // void printF()
+    // {
+    //     for (int iy = 0; iy < ny_; iy++)
+    //     {
+    //         for (int ix = 0; ix < nx_; ix++)
+    //         {
+    //             std::cout << (*nodes[iy][ix].setF())[0] << " ";
+    //         }
+    //         std::cout << "\n";
+    //     }
+    // }
         
 
     // // getters
@@ -116,9 +142,6 @@ public:
     // const int getNy() { return ny_; }
 
     // // methods
-    // void macroscopic();
-
-    // void update();
     
     // void addCursorVel(std::tuple<int, int, float, float>& cursorVel);
     // // void clear();

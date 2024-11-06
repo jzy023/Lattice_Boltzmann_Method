@@ -41,8 +41,6 @@ private:
     // private methods
 
 
-
-
 public:
     // constructors
     node();
@@ -71,25 +69,51 @@ public:
     // std::array<int, 2> SW = {};
         
     // getters
-    const float getType(){ return type_; }
+    const float Type() { return type_; }
 
-    const float getRho(){ return rho_; }
+    const float Rho() { return rho_; }
 
-    const float getUx(){ return ux_; }
+    const float Ux() { return ux_; }
 
-    const float getUy(){ return uy_; }
+    const float Uy() { return uy_; }
 
-    const float getUmag(){ return umag_; }
+    const float Umag() { return umag_; }
 
-    const float getUmagMax(){ return umagMax_; }
+    const float UmagMax() { return umagMax_; }
 
-    // methods
+    const std::array<float, 9>& F() { return f_; }
+
+    const std::array<float, 9>& F0() { return f0_; }
+
+    const std::array<float, 9>& Feq() { return feq_; }
+
+
+    // setters
     void setFluid() { type_ = 1; }
     
     void setBound() { type_ = -1; }
 
     void setVoid() { type_ = -2; }
 
+    void setVel( float ux, float uy) { ux_ = ux; uy_ = uy; }
+
+    std::array<float, 9>* setF() { return &f_; }
+
+    std::array<float, 9>* setF0() { return &f0_; }
+
+    std::array<float, 9>* setFeq() { return &feq_; }
+
+    // void setF(int i, float fi) { f_[i] = fi; }
+    // void setF0(int i, float fi) { f0_[i] = fi; }
+    // void setFeq(int i, float fi) { feq_[i] = fi; }
+
+
+    // methods
+    void equilibrium();
+    
+    void colliding(float tau);
+
+    void macroscopic();
     
 
     // void update();
