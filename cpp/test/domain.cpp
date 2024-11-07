@@ -77,9 +77,9 @@ void domain::init()
         }
     }
 
-    // umagMax_ = ulid_;
-    // visc_ = umagMax_ * (ny_ - 1) / re_;    // <--  needs to be updated with cursor velocity
-    // tau_ = (6 * visc_ + 1) / 2;         // <--  needs to be updated with FPS
+    umagMax_ = ulid_;
+    visc_ = umagMax_ * (ny_ - 1) / re_;    // <--  needs to be updated with cursor velocity
+    tau_ = (6 * visc_ + 1) / 2;         // <--  needs to be updated with FPS
     // std::cout << "domain size: " << nx_ <<std::endl;
     // std::cout << "viscosity: " << visc_ <<std::endl;
     // std::cout << "time constant: " << tau_ <<std::endl;
@@ -273,19 +273,35 @@ void domain::init()
 
 void domain::checkBound()
 {
+    bool isNeighborOut_;
+    // to avoid indexing out of domain, currently only works for rectangular domain
     for (int iy = 0; iy < ny_; iy++)
     {
         for (int ix = 0; ix < nx_; ix++)
         {
             for (int n = 0; n < 8; n++)
             {
-                nodes[iy][ix].neibors[n][0] = (nodes[iy][ix].neibors[n][0] < 0)*0
-                                            + (nodes[iy][ix].neibors[n][0] > (ny_-1))*(ny_-1)
-                                            + ((ny_-1) >= nodes[iy][ix].neibors[n][0] && nodes[iy][ix].neibors[n][0] >= 0)*nodes[iy][ix].neibors[n][0];
+                neighborY_ = nodes[iy][ix].neibors[n][0]; 
+                neighborX_ = nodes[iy][ix].neibors[n][1]; 
 
-                nodes[iy][ix].neibors[n][1] = (nodes[iy][ix].neibors[n][1] < 0)*0
-                                            + (nodes[iy][ix].neibors[n][1] > (nx_-1))*(nx_-1)
-                                            + ((nx_-1) >= nodes[iy][ix].neibors[n][1] && nodes[iy][ix].neibors[n][1] >= 0)*nodes[iy][ix].neibors[n][1];
+                isNeighborOut_ = (neighborY_ < 0) || (neighborY_ >= ny_) 
+                              || (neighborX_ < 0) || (neighborX_ >= nx_);
+                              // || (nodes[neighborY_][neighborX_].Type() == -1);
+                              // TODO: maybe add check if Type!=fluid to make it more general
+
+                if (isNeighborOut_)
+                {
+                    nodes[iy][ix].neibors[n][0] = iy;
+                    nodes[iy][ix].neibors[n][1] = ix;
+                }
+
+                // nodes[iy][ix].neibors[n][0] = (nodes[iy][ix].neibors[n][0] < 0)*0
+                //                             + (nodes[iy][ix].neibors[n][0] > (ny_-1))*(ny_-1)
+                //                             + ((ny_-1) >= nodes[iy][ix].neibors[n][0] && nodes[iy][ix].neibors[n][0] >= 0)*nodes[iy][ix].neibors[n][0];
+
+                // nodes[iy][ix].neibors[n][1] = (nodes[iy][ix].neibors[n][1] < 0)*0
+                //                             + (nodes[iy][ix].neibors[n][1] > (nx_-1))*(nx_-1)
+                //                             + ((nx_-1) >= nodes[iy][ix].neibors[n][1] && nodes[iy][ix].neibors[n][1] >= 0)*nodes[iy][ix].neibors[n][1];
             }
         }
     }
@@ -295,6 +311,16 @@ void domain::checkBound()
 
 void domain::printTypes()
 {
+    // for (int iy = 0; iy < ny_; iy++)
+    // {
+    //     for (int ix = 0; ix < nx_; ix++)
+    //     {
+    //         std::cout << "(" << iy << "," << ix << ") ";
+    //     }
+    //     std::cout << "\n";
+    // }
+    // std::cout << std::endl;
+
     for (int iy = 0; iy < ny_; iy++)
     {
         for (int ix = 0; ix < nx_; ix++)
@@ -315,14 +341,16 @@ void domain::printTypes()
             // std::cout << nodes[iy][ix].Type() << " ";
             // std::cout << "(" << nodes[iy][ix].y << "," << nodes[iy][ix].x << ") ";
             // std::cout << "(" << nodes[iy][ix].neibors[0][0] << "," << nodes[iy][ix].neibors[0][1] << ") ";
-            // std::cout << "(" << nodes[iy][ix].neibors[4][0] << "," << nodes[iy][ix].neibors[4][1] << ") ";
+            // std::cout << "(" << nodes[iy][ix].neibors[0][0] << "," << nodes[iy][ix].neibors[0][1] << ") ";
         }
         std::cout << "\n";
     }
+
+
 }
 
 
-void domain::setBound
+void domain::setWall
 (
     int yMin, 
     int xMin, 
@@ -340,13 +368,13 @@ void domain::setBound
     if (yMin < 0 || yMax > (ny_-1))
     {        
         std::cout << "WARNING: entrance [yMin, yMax]: (" << yMin << "," << yMax
-                  << ") are out of bound of: ["          << 0    << "," << (ny_-1) << "] for setBound()\n";
+                  << ") are out of bound of: ["          << 0    << "," << (ny_-1) << "] for setWall()\n";
     }
 
     if (xMin < 0 || xMax > (nx_-1))
     {        
         std::cout << "WARNING: entrance [xMin, xMax]: (" << xMin << "," << xMax
-                  << ") are out of bound of: ["          << 0    << "," << (nx_-1) << "] for setBound()\n";
+                  << ") are out of bound of: ["          << 0    << "," << (nx_-1) << "] for setWall()\n";
     }
 
     // check to avoid out of bound
@@ -375,7 +403,7 @@ void domain::setBound
         for (int ix = xMin; ix < xMax+1; ix++)
         {
             // std::cout << "setting bound at (" << iy << "," << ix << ")\n";
-            nodes[iy][ix].setBound();
+            nodes[iy][ix].setWall();
         }
     }
 }
@@ -445,8 +473,9 @@ void domain::update()
     {
         for (int ix = 0; ix < nx_; ix++)
         {
-            // skip voids
-            if (nodes[iy][ix].Type() == -2)
+            // skip bound and voids
+            if ((nodes[iy][ix].Type() == -1)
+             || (nodes[iy][ix].Type() == -2))
             {
                 continue;
             }
@@ -456,9 +485,30 @@ void domain::update()
 
             // boundary
             // nodes[iy][ix].forceBoundaries();
+            for (int q = 0; q < 8; q++)
+            {
+                neighborY_ = nodes[iy][ix].neibors[q][0]; // Y-coord of the neighboring particle on direction q
+                neighborX_ = nodes[iy][ix].neibors[q][1]; // X-coord of the neighboring particle on direction q
+                // in checkBound(), neighbor nodes' coords would set to local coords if they are edge or bound 
+                isNeighborBound_ = nodes[neighborY_][neighborX_].Type() != 1;
+
+                if (isNeighborBound_)
+                {
+                    oppositeIdx_ = oppositeIdxF[q];
+                    (*nodes[neighborY_][neighborX_].setF())[oppositeIdx_] = nodes[neighborY_][neighborX_].F()[q];
+                }
+                
+            }
+
+            // add source term
+            if ((iy == ny_-1) && (1 < ix) && (ix < nx_-2))
+            {
+                nodes[iy][ix].setVel(ulid_, 0.0);
+            }
+            
 
             // colliding
-            if ( (0 < iy) && (0 < ix) && ( iy < ny_-1) && ( ix < nx_-1))
+            if ( (0 < iy) && (0 < ix) && (iy < ny_-1) && (ix < nx_-1))
             {
                 nodes[iy][ix].colliding(tau_);
                 // for (int q = 0; q < 9; q++)
@@ -468,8 +518,15 @@ void domain::update()
             }
 
             // streaming
+            for (int q = 0; q < 8; q++)
+            {
+                neighborY_ = nodes[iy][ix].neibors[q][0]; // Y-coord of the neighboring particle on direction q
+                neighborX_ = nodes[iy][ix].neibors[q][1]; // X-coord of the neighboring particle on direction q
+                (*nodes[iy][ix].setF())[q] = nodes[neighborY_][neighborX_].F()[q];
+            }
+            
 
-            // add source term
+
 
             // macroscopic
             nodes[iy][ix].macroscopic();

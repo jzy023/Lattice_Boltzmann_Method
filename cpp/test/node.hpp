@@ -91,7 +91,7 @@ public:
     // setters
     void setFluid() { type_ = 1; }
     
-    void setBound() { type_ = -1; }
+    void setWall() { type_ = -1; }
 
     void setVoid() { type_ = -2; }
 

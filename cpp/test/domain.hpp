@@ -37,6 +37,25 @@ private:
     const int E  = 1,  N = 2,  W = 3,  S = 4;
     const int NE = 5, NW = 6, SW = 7, SE = 8;
     const int Q = 9;
+
+    const std::array<int, 9> oppositeIdxF = 
+    {
+        0,  // -> 0 (C)
+        3,  // -> 1 (E)
+        4,  // -> 2 (N)
+        1,  // -> 3 (W)
+        2,  // -> 4 (S)
+        7,  // -> 5 (NE)
+        8,  // -> 6 (NW)
+        5,  // -> 7 (SW)
+        6   // -> 8 (SE)
+    };
+
+    // helper variables
+    int oppositeIdx_;
+    int neighborY_;
+    int neighborX_;
+    bool isNeighborBound_;
     
     // time stepping info
     int itr_;
@@ -95,7 +114,7 @@ public:
 
     void printTypes();
 
-    void setBound(int yMin, int xMin, int yMax, int xMax);
+    void setWall(int yMin, int xMin, int yMax, int xMax);
 
     void setConstVel(int yMin, int xMin, int yMax, int xMax, float ux, float uy);
 
@@ -137,9 +156,11 @@ public:
 
     // const float getUmagMax(){ return umagMax_; }
 
-    // const int getNx() { return nx_; }
+    const int getNx() { return nx_; }
 
-    // const int getNy() { return ny_; }
+    const int getNy() { return ny_; }
+
+    const 
 
     // // methods
     
