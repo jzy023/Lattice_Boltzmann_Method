@@ -2,6 +2,7 @@
 #include <GL/gl.h>
 
 #include "includes.hpp"
+#include "node.hpp"
 
 class interactiveWindow
 {
@@ -13,6 +14,12 @@ private:
     int gridHeight_;
     int windowWidth_;
     int windowHeight_;
+
+    float valueY_;
+    float valueX_;
+    float valueMag_;
+    float valueMagBase_ = 0.2;
+    float valueNormalized_ = 1.0;
 
     // GifFileType* gifFile_;
     // const char* gifFileName_;
@@ -54,7 +61,7 @@ public:
     void render
     (
         const std::vector<std::vector<float>>& vec,
-        const float vecMax
+        float vecMax
     );
 
 
@@ -62,7 +69,12 @@ public:
     (
         const std::vector<std::vector<float>>& vecX, 
         const std::vector<std::vector<float>>& vecY,
-        const float umagMax
+        float umagMax
+    );
+
+    void render
+    (
+        const std::vector<std::vector<node>>& nodes
     );
 
 

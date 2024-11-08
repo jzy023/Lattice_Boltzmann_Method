@@ -80,9 +80,9 @@ void domain::init()
     umagMax_ = ulid_;
     visc_ = umagMax_ * (ny_ - 1) / re_;    // <--  needs to be updated with cursor velocity
     tau_ = (6 * visc_ + 1) / 2;         // <--  needs to be updated with FPS
-    // std::cout << "domain size: " << nx_ <<std::endl;
-    // std::cout << "viscosity: " << visc_ <<std::endl;
-    // std::cout << "time constant: " << tau_ <<std::endl;
+    std::cout << "domain size: " << nx_ <<std::endl;
+    std::cout << "viscosity: " << visc_ <<std::endl;
+    std::cout << "time constant: " << tau_ <<std::endl;
 
     checkBound();
 }
@@ -327,7 +327,7 @@ void domain::printTypes()
         {
             if (nodes[iy][ix].Type() == 1)
             {
-                std::cout << " ~";
+                std::cout << "  ";
             }
             else if(nodes[iy][ix].Type() == -1)
             {
@@ -474,11 +474,12 @@ void domain::update()
         for (int ix = 0; ix < nx_; ix++)
         {
             // skip bound and voids
-            if ((nodes[iy][ix].Type() == -1)
-             || (nodes[iy][ix].Type() == -2))
+            if ((nodes[iy][ix].Type() == -1) ||
+                (nodes[iy][ix].Type() == -2))
             {
                 continue;
             }
+
 
             // calc equilibrium
             nodes[iy][ix].equilibrium();
@@ -490,20 +491,29 @@ void domain::update()
                 neighborY_ = nodes[iy][ix].neibors[q][0]; // Y-coord of the neighboring particle on direction q
                 neighborX_ = nodes[iy][ix].neibors[q][1]; // X-coord of the neighboring particle on direction q
                 // in checkBound(), neighbor nodes' coords would set to local coords if they are edge or bound 
-                isNeighborBound_ = nodes[neighborY_][neighborX_].Type() != 1;
+                isNeighborBound_ = (nodes[neighborY_][neighborX_].Type() != 1);
 
                 if (isNeighborBound_)
                 {
                     oppositeIdx_ = oppositeIdxF[q];
                     (*nodes[neighborY_][neighborX_].setF())[oppositeIdx_] = nodes[neighborY_][neighborX_].F()[q];
-                }
-                
+                }   
             }
 
             // add source term
-            if ((iy == ny_-1) && (1 < ix) && (ix < nx_-2))
+            if ((iy == ny_-1) && (0 < ix) && (ix < nx_-1))
             {
                 nodes[iy][ix].setVel(ulid_, 0.0);
+
+                // for (int q = 0; q < 9; q++)
+                // {
+                //     if (/* condition */)
+                //     {
+                //         continue;
+                //     }
+                    
+                //     (*nodes[iy][ix].setF())[q] = nodes[iy][ix].Feq()[q];
+                // }
             }
             
 
@@ -511,10 +521,6 @@ void domain::update()
             if ( (0 < iy) && (0 < ix) && (iy < ny_-1) && (ix < nx_-1))
             {
                 nodes[iy][ix].colliding(tau_);
-                // for (int q = 0; q < 9; q++)
-                // {
-                //     (*nodes[iy][ix].setF0())[q] += -(1. / tau_) * (nodes[iy][ix].F()[q] - nodes[iy][ix].Feq()[q]);
-                // }
             }
 
             // streaming
@@ -522,16 +528,30 @@ void domain::update()
             {
                 neighborY_ = nodes[iy][ix].neibors[q][0]; // Y-coord of the neighboring particle on direction q
                 neighborX_ = nodes[iy][ix].neibors[q][1]; // X-coord of the neighboring particle on direction q
-                (*nodes[iy][ix].setF())[q] = nodes[neighborY_][neighborX_].F()[q];
+
+                if(neighborY_ != iy && neighborX_ != ix && nodes[neighborY_][neighborX_].Type() == 1) {
+                    (*nodes[iy][ix].setF())[q] = nodes[neighborY_][neighborX_].F0()[q];
+                }
+                // std::cout << "(" << neighborY_ << "," << neighborX_ << ") ";
+                
+                // std::cout << nodes[neighborY_][neighborX_].Type() << " "; 
+
+                // if(nodes[neighborY_][neighborX_].Type() == !1) 
+                // {
+                //     std::cout << q << " "; 
+                // }
+                // else
+                // {
+                //     std::cout << q;
+                // }
             }
-            
-
-
+            // std::cout << ", ";
 
             // macroscopic
             nodes[iy][ix].macroscopic();
 
         }
+        // std::cout << std::endl;
     }
 }
 

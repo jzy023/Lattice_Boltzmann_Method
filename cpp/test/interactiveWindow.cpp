@@ -173,29 +173,29 @@ std::vector<float> interactiveWindow::getJetColor
 void interactiveWindow::render
 (
     const std::vector<std::vector<float>>& vec,
-    const float vecMax
+    float vecMax
 )
 {
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_QUADS);
 
-    for (int x = 0; x < gridWidth_ - 1; ++x) {
-        for (int y = 0; y < gridHeight_ - 1; ++y) {
+    for (int iy = 0; iy < gridHeight_ - 1;  iy++) {
+        for (int ix = 0; ix < gridWidth_ - 1;  ix++) {
 
-            float vecMagBase = vecMax;
-            float normalizedValue = vec[x][y] / vecMagBase;
+            valueMagBase_ = vecMax;
+            valueNormalized_ = vec[iy][ix] / valueMagBase_;
 
             // Get the corresponding Jet colormap color
-            std::vector<float> color = getJetColor(normalizedValue);
+            std::vector<float> color = getJetColor(valueNormalized_);
 
             // Set color using the Jet colormap
             glColor3f(color[0], color[1], color[2]);
 
             // Draw each grid cell as a square
-            glVertex2f(y, x);
-            glVertex2f(y, x + 1);
-            glVertex2f(y + 1, x + 1);
-            glVertex2f(y + 1, x);
+            glVertex2f(ix, iy);
+            glVertex2f(ix, iy + 1);
+            glVertex2f(ix + 1, iy + 1);
+            glVertex2f(ix + 1, iy);
         }
     }
 
@@ -209,33 +209,78 @@ void interactiveWindow::render
 (
     const std::vector<std::vector<float>>& vecX, 
     const std::vector<std::vector<float>>& vecY,
-    const float vecMagMax
+    float vecMagMax
 )
 {
     glClear(GL_COLOR_BUFFER_BIT);
     glBegin(GL_QUADS);
 
-    float vecMagBase = 0.2;
-    for (int x = 0; x < gridWidth_ - 1; ++x) {
-        for (int y = 0; y < gridHeight_ - 1; ++y) {
+    for (int iy = 0; iy < gridHeight_ - 1;  iy++) {
+        for (int ix = 0; ix < gridWidth_ - 1;  ix++) {
             // Compute the velocity magnitude
-            float vecMag = sqrt(vecX[x][y] * vecX[x][y] + vecY[x][y] * vecY[x][y]);
+            valueMag_ = sqrt(vecX[iy][ix] * vecX[iy][ix] + vecY[iy][ix] * vecY[iy][ix]);
 
             // Normalize velocity for Jet colormap  
-            vecMagBase = (vecMagBase < vecMagMax) * vecMagMax + (vecMagBase >= vecMagMax) * vecMagBase;
-            float normalizedValue = vecMag / vecMagBase;
+            valueMagBase_ = (valueMagBase_ < vecMagMax) * vecMagMax + (valueMagBase_ >= vecMagMax) * valueMagBase_;
+            float valueNormalized_ = valueMag_ / valueMagBase_;
 
             // Get the corresponding Jet colormap color
-            std::vector<float> color = getJetColor(normalizedValue);
+            std::vector<float> color = getJetColor(valueNormalized_);
 
             // Set color using the Jet colormap
             glColor3f(color[0], color[1], color[2]);
 
             // Draw each grid cell as a square
-            glVertex2f(y, x);
-            glVertex2f(y, x + 1);
-            glVertex2f(y + 1, x + 1);
-            glVertex2f(y + 1, x);
+            glVertex2f(ix, iy);
+            glVertex2f(ix, iy + 1);
+            glVertex2f(ix + 1, iy + 1);
+            glVertex2f(ix + 1, iy);
+        }
+    }
+    
+    glEnd();
+    SDL_GL_SwapWindow(window_);
+}
+
+
+
+void interactiveWindow::render
+(
+    const std::vector<std::vector<node>>& nodes
+    // float vecMagMax
+)
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    glBegin(GL_QUADS);
+    
+    // std::cout << gridHeight_ << ", " << gridWidth_ << "\n";
+
+    for (int iy = 0; iy < gridHeight_ - 1;  iy++) {
+        for (int ix = 0; ix < gridWidth_ - 1;  ix++) {
+            // Compute the velocity magnitude
+
+            valueY_ = nodes[iy][ix].Uy();
+            valueX_ = nodes[iy][ix].Ux(); //[iy][ix];
+            valueMag_ = sqrt(valueX_ * valueX_ + valueY_ * valueY_);
+
+            // Normalize velocity for Jet colormap  
+            // valueMagBase_ = (valueMagBase_ < vecMagMax) * vecMagMax + (valueMagBase_ >= vecMagMax) * valueMagBase_;
+            float valueNormalized_ = valueMag_ / valueMagBase_;
+
+            // Get the corresponding Jet colormap color
+            std::vector<float> color = getJetColor(valueNormalized_);
+            // std::cout << valueMag_ << "\n";
+            // std::cout << color[0] << ", " << color[1] << ", " << color[2] << "\n";
+
+            // Set color using the Jet colormap
+            glColor3f(color[0], color[1], color[2]);
+            // glColor3f(225, 225, 225);
+
+            // Draw each grid cell as a square
+            glVertex2f(ix, iy);
+            glVertex2f(ix, iy + 1);
+            glVertex2f(ix + 1, iy + 1);
+            glVertex2f(ix + 1, iy);
         }
     }
     

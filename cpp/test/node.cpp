@@ -84,7 +84,7 @@ void node::colliding(float tau)
 {
     for (int q = 0; q < 9; q++)
     {
-        f_[q] += -(1. / tau) * (f_[q] - feq_[q]);
+        f0_[q] += -(1. / tau) * (f_[q] - feq_[q]);
     }
 }
 
@@ -101,6 +101,7 @@ void node::macroscopic()
     // update usqr and umag
     usqr_ = ux_ * ux_ + uy_ * uy_;
     umag_ = std::sqrt(usqr_);
+    // std::cout << feq_[0] - feq_[2] + feq_[4] + feq_[7] - feq_[5] - feq_[6];
 }
 
 

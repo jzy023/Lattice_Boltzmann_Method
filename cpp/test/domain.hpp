@@ -11,13 +11,13 @@ Parameters:
 
 Geometric Setup:
 
-    6(NW)  2(N)  5(NE)
+    5(NW)  1(N)  4(NE)
         \   |   /
          \  |  /
-    3(W)-- 0(C) --1(E)
+    2(W)-- 8(C) --0(E)
          /  |  \
         /   |   \
-    7(SW)  4(S)  8(SE)
+    6(SW)  3(S)  7(SE)
 
 // ------------------------------------------ */ 
 
@@ -33,22 +33,22 @@ class domain
 private:
 
     // constant 2D spacial info
-    const int C = 0;
-    const int E  = 1,  N = 2,  W = 3,  S = 4;
-    const int NE = 5, NW = 6, SW = 7, SE = 8;
-    const int Q = 9;
+    // const int C = 0;
+    // const int E  = 1,  N = 2,  W = 3,  S = 4;
+    // const int NE = 5, NW = 6, SW = 7, SE = 8;
+    // const int Q = 9;
 
     const std::array<int, 9> oppositeIdxF = 
     {
-        0,  // -> 0 (C)
-        3,  // -> 1 (E)
-        4,  // -> 2 (N)
-        1,  // -> 3 (W)
-        2,  // -> 4 (S)
-        7,  // -> 5 (NE)
-        8,  // -> 6 (NW)
-        5,  // -> 7 (SW)
-        6   // -> 8 (SE)
+        2,  // -> 0 (E)
+        3,  // -> 1 (N)
+        0,  // -> 2 (W)
+        1,  // -> 3 (S)
+        6,  // -> 4 (NE)
+        7,  // -> 5 (NW)
+        4,  // -> 6 (SW)
+        5,  // -> 7 (SE)
+        8   // -> 8 (C)
     };
 
     // helper variables
@@ -132,17 +132,17 @@ public:
     // }
 
 
-    // void printF()
-    // {
-    //     for (int iy = 0; iy < ny_; iy++)
-    //     {
-    //         for (int ix = 0; ix < nx_; ix++)
-    //         {
-    //             std::cout << (*nodes[iy][ix].setF())[0] << " ";
-    //         }
-    //         std::cout << "\n";
-    //     }
-    // }
+    void printUmag()
+    {
+        for (int iy = 0; iy < ny_; iy++)
+        {
+            for (int ix = 0; ix < nx_; ix++)
+            {
+                std::cout << std::setprecision(2) << nodes[iy][ix].Umag() << " ";
+            }
+            std::cout << "\n";
+        }
+    }
         
 
     // // getters
@@ -160,7 +160,7 @@ public:
 
     const int getNy() { return ny_; }
 
-    const 
+    // const 
 
     // // methods
     

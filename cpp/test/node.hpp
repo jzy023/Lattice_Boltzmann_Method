@@ -33,10 +33,11 @@ private:
     float usqr_;
     float umag_;
 
-
-    std::array<float, 9> f_ = {};
-    std::array<float, 9> f0_ = {};
-    std::array<float, 9> feq_ = {};
+    //                         E      N      W      S      NE      NW      SW      SE      C
+    //                         0      1      2      3      4       5       6       7       8         
+    std::array<float, 9> f_ = {1./9., 1./9., 1./9., 1./9., 1./36., 1./36., 1./36., 1./36., 4./9.};
+    std::array<float, 9> f0_ = f_;
+    std::array<float, 9> feq_ = f_;
 
     // private methods
 
@@ -69,23 +70,23 @@ public:
     // std::array<int, 2> SW = {};
         
     // getters
-    const float Type() { return type_; }
+    const float Type() const { return type_; }
 
-    const float Rho() { return rho_; }
+    const float Rho() const { return rho_; }
 
-    const float Ux() { return ux_; }
+    const float Ux() const { return ux_; }
 
-    const float Uy() { return uy_; }
+    const float Uy() const { return uy_; }
 
-    const float Umag() { return umag_; }
+    const float Umag() const { return umag_; }
 
-    const float UmagMax() { return umagMax_; }
+    const float UmagMax() const { return umagMax_; }
 
-    const std::array<float, 9>& F() { return f_; }
+    const std::array<float, 9>& F() const { return f_; }
 
-    const std::array<float, 9>& F0() { return f0_; }
+    const std::array<float, 9>& F0() const { return f0_; }
 
-    const std::array<float, 9>& Feq() { return feq_; }
+    const std::array<float, 9>& Feq() const { return feq_; }
 
 
     // setters
