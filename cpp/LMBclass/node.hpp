@@ -91,23 +91,19 @@ public:
 
 
     // setters
-    void setFluid() { type_ = 1; }
+    void setNodeFluid() { type_ = 1; }
     
-    void setWall() { type_ = -1; }
+    void setNodeWall() { type_ = -1; }
 
-    void setVoid() { type_ = -2; }
+    void setNodeVoid() { type_ = -2; }
 
-    void setVel( float ux, float uy) { ux_ = ux; uy_ = uy; }
+    void setNodeVel( float ux, float uy) { ux_ = ux; uy_ = uy; }
 
     std::array<float, 9>* setF() { return &f_; }
 
     std::array<float, 9>* setF0() { return &f0_; }
 
     std::array<float, 9>* setFeq() { return &feq_; }
-
-    // void setF(int i, float fi) { f_[i] = fi; }
-    // void setF0(int i, float fi) { f0_[i] = fi; }
-    // void setFeq(int i, float fi) { feq_[i] = fi; }
 
 
     // methods
@@ -117,12 +113,5 @@ public:
 
     void macroscopic();
     
-
-    // void update();
-    
-    // void addCursorVel(std::tuple<int, int, float, float>& cursorVel);
-    // // void clear();
-
-    // void setUlid(float ulid) { ulid_ = ulid; }
 
 };

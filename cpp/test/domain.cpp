@@ -80,6 +80,7 @@ void domain::init()
     umagMax_ = ulid_;
     visc_ = umagMax_ * (ny_ - 1) / re_;    // <--  needs to be updated with cursor velocity
     tau_ = (6 * visc_ + 1) / 2;         // <--  needs to be updated with FPS
+    // tau_ = 0.5001;
     std::cout << "domain size: " << nx_ <<std::endl;
     std::cout << "viscosity: " << visc_ <<std::endl;
     std::cout << "time constant: " << tau_ <<std::endl;
@@ -327,7 +328,7 @@ void domain::printTypes()
         {
             if (nodes[iy][ix].Type() == 1)
             {
-                std::cout << "  ";
+                std::cout << " ~";
             }
             else if(nodes[iy][ix].Type() == -1)
             {
@@ -469,11 +470,12 @@ void domain::setConstVel
 
 void domain::update()
 {
+ 
     for (int iy = 0; iy < ny_; iy++)
     {
         for (int ix = 0; ix < nx_; ix++)
         {
-            // skip bound and voids
+            // - skip bound and voids
             if ((nodes[iy][ix].Type() == -1) ||
                 (nodes[iy][ix].Type() == -2))
             {
@@ -481,10 +483,90 @@ void domain::update()
             }
 
 
-            // calc equilibrium
+            // - macroscopic
+            nodes[iy][ix].macroscopic();
+
+
+            // - add source term
+            if ((iy == ny_-1) && (0 < ix) && (ix < nx_-1))
+            {
+                nodes[iy][ix].setVel(ulid_, 0.0);
+
+                for (int q = 0; q < 9; q++)
+                {   
+                    (*nodes[iy][ix].setF0())[q] = nodes[iy][ix].Feq()[q];
+                }
+            }
+
+
+            // - calc equilibrium
             nodes[iy][ix].equilibrium();
 
-            // boundary
+
+            // - colliding
+            if ( (0 < iy) && (0 < ix) && (iy < ny_-1) && (ix < nx_-1))
+            {
+                nodes[iy][ix].colliding(tau_);
+            }
+            // else
+            // {
+            //     for (int q = 0; q < 9; q++)
+            //     {
+            //         (*nodes[iy][ix].setF0())[q] = nodes[iy][ix].F()[q];
+            //     }
+            // }
+        }
+    }
+
+    // // float swapTemp;
+    // for (int iy = 0; iy < ny_; iy++)
+    // {
+    //     for (int ix = 0; ix < nx_; ix++)
+    //     {
+    //         // // skip bound and voids
+    //         // if ((nodes[iy][ix].Type() == -1) ||
+    //         //     (nodes[iy][ix].Type() == -2))
+    //         // {
+    //         //     continue;
+    //         // }
+
+    //         for (int q = 0; q < 9; q++)
+    //         {
+    //             // swapTemp = nodes[iy][ix].F0()[q];
+    //             (*nodes[iy][ix].setF0())[q] = nodes[iy][ix].F()[q];
+    //             // (*nodes[iy][ix].setF())[q] = swapTemp;
+    //         }
+    //     }
+    // }
+
+
+    for (int iy = 0; iy < ny_; iy++)
+    {
+        for (int ix = 0; ix < nx_; ix++)
+        {
+            // // skip bound and voids
+            // if ((nodes[iy][ix].Type() == -1) ||
+            //     (nodes[iy][ix].Type() == -2))
+            // {
+            //     continue;
+            // }
+
+            // - streaming
+            for (int q = 0; q < 8; q++)
+            {
+                neighborY_ = nodes[iy][ix].neibors[q][0]; // Y-coord of the neighboring particle on direction q
+                neighborX_ = nodes[iy][ix].neibors[q][1]; // X-coord of the neighboring particle on direction q
+
+                // if((neighborY_ != iy || neighborX_ != ix) && nodes[neighborY_][neighborX_].Type() == 1)
+                if(nodes[neighborY_][neighborX_].Type() == 1)
+                {
+                    // (*nodes[iy][ix].setF())[q] = nodes[neighborY_][neighborX_].F0()[q];
+                    (*nodes[neighborY_][neighborX_].setF())[q] = nodes[iy][ix].F0()[q];
+                }
+            }
+
+
+            // - boundary
             // nodes[iy][ix].forceBoundaries();
             for (int q = 0; q < 8; q++)
             {
@@ -496,60 +578,9 @@ void domain::update()
                 if (isNeighborBound_)
                 {
                     oppositeIdx_ = oppositeIdxF[q];
-                    (*nodes[neighborY_][neighborX_].setF())[oppositeIdx_] = nodes[neighborY_][neighborX_].F()[q];
+                    (*nodes[iy][ix].setF())[oppositeIdx_] = nodes[iy][ix].F()[q];
                 }   
             }
-
-            // add source term
-            if ((iy == ny_-1) && (0 < ix) && (ix < nx_-1))
-            {
-                nodes[iy][ix].setVel(ulid_, 0.0);
-
-                // for (int q = 0; q < 9; q++)
-                // {
-                //     if (/* condition */)
-                //     {
-                //         continue;
-                //     }
-                    
-                //     (*nodes[iy][ix].setF())[q] = nodes[iy][ix].Feq()[q];
-                // }
-            }
-            
-
-            // colliding
-            if ( (0 < iy) && (0 < ix) && (iy < ny_-1) && (ix < nx_-1))
-            {
-                nodes[iy][ix].colliding(tau_);
-            }
-
-            // streaming
-            for (int q = 0; q < 8; q++)
-            {
-                neighborY_ = nodes[iy][ix].neibors[q][0]; // Y-coord of the neighboring particle on direction q
-                neighborX_ = nodes[iy][ix].neibors[q][1]; // X-coord of the neighboring particle on direction q
-
-                if(neighborY_ != iy && neighborX_ != ix && nodes[neighborY_][neighborX_].Type() == 1) {
-                    (*nodes[iy][ix].setF())[q] = nodes[neighborY_][neighborX_].F0()[q];
-                }
-                // std::cout << "(" << neighborY_ << "," << neighborX_ << ") ";
-                
-                // std::cout << nodes[neighborY_][neighborX_].Type() << " "; 
-
-                // if(nodes[neighborY_][neighborX_].Type() == !1) 
-                // {
-                //     std::cout << q << " "; 
-                // }
-                // else
-                // {
-                //     std::cout << q;
-                // }
-            }
-            // std::cout << ", ";
-
-            // macroscopic
-            nodes[iy][ix].macroscopic();
-
         }
         // std::cout << std::endl;
     }

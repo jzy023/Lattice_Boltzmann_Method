@@ -9,11 +9,6 @@ node::node()
     y(0),
     x(0)
 {
-    // std::cout << "constructing node at x: " << x << ", y: " << y << std::endl;
-    // NW = {y+1, x-1}; NE = {y+1, x+1};
-    // W =  {y, x-1};   E =  {y, x+1};
-    // SW = {y-1, x-1}; SE = {y-1, x+1};
-
     neibors[0][0] = y;   neibors[0][1] = x+1; // E
     neibors[1][0] = y+1; neibors[1][1] = x;   // N
     neibors[2][0] = y;   neibors[2][1] = x-1; // W
@@ -36,11 +31,6 @@ node::node
     y(y),
     x(x)
 {
-    // std::cout << "constructing node at x: " << x << ", y: " << y << std::endl;
-    // NW = {y+1, x-1}; NE = {y+1, x+1};
-    // W =  {y, x-1};   E =  {y, x+1};
-    // SW = {y-1, x-1}; SE = {y-1, x+1};
-
     neibors[0][0] = y;   neibors[0][1] = x+1; // E
     neibors[1][0] = y+1; neibors[1][1] = x;   // N
     neibors[2][0] = y;   neibors[2][1] = x-1; // W

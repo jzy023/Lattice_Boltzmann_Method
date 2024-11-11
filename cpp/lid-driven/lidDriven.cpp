@@ -83,13 +83,13 @@ void lidDriven::calcTau()
 {
     visc_ = umagMax_ * (ny_ - 1) / re_;    // <--  needs to be updated with cursor velocity
     tau_ = (6 * visc_ + 1) / 2;         // <--  needs to be updated with FPS
-    std::cout << std::fixed << std::setprecision(4) << "\t>>> tau: " << tau_;
+    // std::cout << std::fixed << std::setprecision(4) << "\t>>> tau: " << tau_;
 }
 
 
 void lidDriven::equilibrium()
 {
-    #pragma omp parallel for collapse(2)
+    // #pragma omp parallel for collapse(2)
     for (int i = 0; i < ny_; i++)
     {
         for (int j = 0; j < nx_; j++)
@@ -148,6 +148,16 @@ void lidDriven::boundaryConditions()
 
 void lidDriven::collideStream()
 {
+    // for (int i = 1; i < ny_-1; i++)
+    // {
+    //     for (int j = 1; j < nx_-1; j++)
+    //     {
+    //         std::cout << std::setw(8) << std::setprecision(2) << f_[i][j][1] << " ";
+    //     }
+    //     std::cout << "\n";
+    // }
+    // std::cout << "\n";
+
     // Colliding
     for (int i = 1; i < ny_-1; i++)
     {
@@ -157,11 +167,24 @@ void lidDriven::collideStream()
             {
                 f_[i][j][q] += -(1. / tau_) * (f_[i][j][q] - feq_[i][j][q]);
             }
+            // std::cout << std::setw(8) << std::setprecision(2) << f0_[i][j][1] << " ";
         }
+        // std::cout << "\n";
     }
+    // std::cout << "================================================================\n";
 
     // Streaming
     f0_.swap(f_);
+
+    // for (int i = 1; i < ny_-1; i++)
+    // {
+    //     for (int j = 1; j < nx_-1; j++)
+    //     {
+    //         std::cout << std::setw(8) << std::setprecision(2) << f0_[i][j][1] << " ";
+    //     }
+    //     std::cout << "\n";
+    // }
+    // std::cout << "\n";
 
     // East propagation
     for (int i = 0; i < ny_; i++)
@@ -239,7 +262,7 @@ void lidDriven::macroscopic()
     // umagMax_ = ulid_;
     // umagMax_ = 0.95*umagMax_;
     
-    #pragma omp parallel for collapse(2)
+    // #pragma omp parallel for collapse(2)
     for (int i = 0; i < ny_; i++)
     {
         for (int j = 0; j < nx_; j++)
@@ -298,7 +321,7 @@ void lidDriven::addCursorVel
 
     float umagInput = std::sqrt(ux * ux + uy * uy);
     umagMax_ = (umagInput >= umagMax_) * umagInput + (umagInput < umagMax_) * umagMax_;
-    std::cout << " umagMax: " << umagMax_;
+    // std::cout << " umagMax: " << umagMax_;
 }
 
 

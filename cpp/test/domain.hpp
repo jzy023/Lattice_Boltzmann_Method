@@ -51,6 +51,19 @@ private:
         8   // -> 8 (C)
     };
 
+    const std::array<std::string, 9> nameF = 
+    {
+        "E",
+        "N",
+        "W",
+        "S",
+        "NE",
+        "NW",
+        "SW",
+        "SE",
+        "C"
+    };
+
     // helper variables
     int oppositeIdx_;
     int neighborY_;
@@ -136,11 +149,19 @@ public:
     {
         for (int iy = 0; iy < ny_; iy++)
         {
+            // int iy = 3;
             for (int ix = 0; ix < nx_; ix++)
             {
-                std::cout << std::setprecision(2) << nodes[iy][ix].Umag() << " ";
+                std::cout << std::setw(8) << std::setprecision(2) << nodes[iy][ix].Umag() << " ";
+                // std::cout << std::setw(4) << std::setprecision(2) << nodes[iy][ix].F()[0] << " ";
             }
             std::cout << "\n";
+            // for (int ix = 0; ix < nx_; ix++)
+            // {
+            //     // std::cout << std::setw(8) << std::setprecision(2) << nodes[iy][ix].Umag() << " ";
+            //     std::cout << std::setw(4) << std::setprecision(2) << nodes[iy][ix].F()[2] << " ";
+            // }
+            // std::cout << "\n";
         }
     }
         
